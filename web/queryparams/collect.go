@@ -5,10 +5,12 @@ import (
 	"strconv"
 )
 
-const minParam = "min"
-const maxParam = "max"
-const meanParam = "mean"
-const stddevParam = "stddev"
+const (
+	minParam    = "min"
+	maxParam    = "max"
+	meanParam   = "mean"
+	stddevParam = "stddev"
+)
 
 func collectFloat64(param string, c *gin.Context, defaultValue float64) (float64, error) {
 	found := c.Query(param)
