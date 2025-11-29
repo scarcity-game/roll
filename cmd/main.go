@@ -10,6 +10,7 @@ func main() {
 	router := gin.Default()
 	router.GET("/rollDice", web.RollDice)
 	router.GET("/sampleGaussian", web.SampleGaussian)
+	router.GET("/sampleUniform", web.SampleUniform)
 
 	err := router.Run("localhost:8080")
 	if err != nil {

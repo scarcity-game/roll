@@ -121,13 +121,13 @@ func TestExtractSpecification(t *testing.T) {
 			req, _ := http.NewRequest("GET", tt.args.url, nil)
 			c.Request = req
 
-			got, err := ExtractSpecification(c)
-			tt.wantErr(t, err, fmt.Sprintf("ExtractSpecification() err = %v", err))
+			got, err := ExtractRollSpecification(c)
+			tt.wantErr(t, err, fmt.Sprintf("ExtractRollSpecification() err = %v", err))
 			if err != nil {
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ExtractSpecification() got = %v, want %v", got, tt.want)
+				t.Errorf("ExtractRollSpecification() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

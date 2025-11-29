@@ -8,37 +8,37 @@ import (
 )
 
 type Specification struct {
-	mean   float64
-	stddev float64
-	min    float64
-	max    float64
+	Mean   float64
+	Stddev float64
+	Min    float64
+	Max    float64
 	valid  bool
 }
 
-func defaultSpecification() *Specification {
+func DefaultSpecification() *Specification {
 	return &Specification{
-		mean:   0,
-		stddev: 1,
-		min:    math.MinInt64,
-		max:    math.MaxFloat64,
+		Mean:   0,
+		Stddev: 1,
+		Min:    math.MinInt64,
+		Max:    math.MaxFloat64,
 	}
 }
 
 func (s *Specification) Validate() error {
-	if s.max <= s.min {
+	if s.Max <= s.Min {
 		return errors.New("max is greater than min")
 	}
-	if s.mean < s.min {
+	if s.Mean < s.Min {
 		//return errors.New("mean is less than min")
 		fmt.Println("mean is less than min. multiple samples may be needed")
 	}
-	if s.mean > s.max {
+	if s.Mean > s.Max {
 		//return errors.New("mean is greater than max")
 		fmt.Println("mean is greater than max. multiple samples may be needed")
 	}
-	minDiff := s.mean - s.min
-	maxDiff := s.mean - s.max
-	if math.Signbit(minDiff) == math.Signbit(maxDiff) && min(math.Abs(minDiff), math.Abs(maxDiff)) > s.stddev {
+	minDiff := s.Mean - s.Min
+	maxDiff := s.Mean - s.Max
+	if math.Signbit(minDiff) == math.Signbit(maxDiff) && min(math.Abs(minDiff), math.Abs(maxDiff)) > s.Stddev {
 		//return errors.New("mean is greater than max")
 		fmt.Println("acceptable range more than a stddev from mean. multiple samples may be needed")
 	}
@@ -53,8 +53,8 @@ func (s *Specification) Roll(random *rand.Rand) (float64, error) {
 		panic("valid == false but roll called")
 	}
 	for i := 0; i < maxSamples; i++ {
-		potential := random.NormFloat64()*s.stddev + s.mean
-		if potential <= s.max && potential >= s.min {
+		potential := random.NormFloat64()*s.Stddev + s.Mean
+		if potential <= s.Max && potential >= s.Min {
 			return potential, nil
 		}
 	}

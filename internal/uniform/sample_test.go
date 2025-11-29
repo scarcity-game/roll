@@ -1,9 +1,8 @@
-package gaussian
+package uniform
 
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"math"
 	"math/rand"
 	"testing"
 )
@@ -16,8 +15,13 @@ func TestSpecification_Validate(t *testing.T) {
 	}{
 		{
 			name:          "valid",
-			specification: defaultSpecification(),
+			specification: DefaultSpecification(),
 			wantErr:       assert.NoError,
+		},
+		{
+			name:          "min > max",
+			specification: &Specification{Min: 3, Max: 2},
+			wantErr:       assert.Error,
 		},
 	}
 	for _, tt := range tests {
@@ -41,28 +45,16 @@ func TestSpecification_Roll(t *testing.T) {
 		wantErr       assert.ErrorAssertionFunc
 	}{
 		{
-			name:          "mean=0 stddev=1",
-			specification: defaultSpecification(),
+			name: "happy path",
+			specification: &Specification{
+				Min: 4,
+				Max: 10,
+			},
 			args: args{
 				random: rand.New(rand.NewSource(0)),
 			},
-			want:    -0.28158587086436215,
-			delta:   .000001,
-			wantErr: assert.NoError,
-		},
-		{
-			name: "outlier by 4 stddev",
-			specification: &Specification{
-				mean:   0,
-				stddev: 1,
-				min:    4,
-				max:    math.MaxFloat64,
-			},
-			args: args{
-				random: rand.New(rand.NewSource(2358639785634891464)),
-			},
-			want:    4.050253,
-			delta:   .000001,
+			want:    9.671176895764699,
+			delta:   .00000001,
 			wantErr: assert.NoError,
 		},
 	}

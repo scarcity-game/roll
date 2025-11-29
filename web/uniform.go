@@ -2,24 +2,22 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/scarcity-game/roll/internal/dice"
 	"github.com/scarcity-game/roll/web/queryparams"
 	"net/http"
 )
 
-func RollDice(c *gin.Context) {
-	diceString := c.DefaultQuery("dice", "1d6")
+func SampleUniform(c *gin.Context) {
 	rollSpecification, err := queryparams.ExtractRollSpecification(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	diceSpecification, err := dice.ParseDiceString(diceString)
+	uniformSpecification, err := queryparams.ExtractUniformSpecification(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	result, err := rollSpecification.Roll(diceSpecification)
+	result, err := rollSpecification.Roll(uniformSpecification)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

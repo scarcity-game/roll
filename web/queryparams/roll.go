@@ -4,22 +4,27 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/scarcity-game/roll/internal/roll"
-	"strconv"
 	"strings"
 )
 
-func ExtractSpecification(c *gin.Context) (*roll.Specification, error) {
+func ExtractRollSpecification(c *gin.Context) (*roll.Specification, error) {
 	ret := roll.DefaultSpecification()
-	if err := collectRolls(ret, c); err != nil {
+	if value, err := collectInt("rolls", c, ret.Rolls); err != nil {
 		return nil, err
+	} else {
+		ret.Rolls = value
 	}
 
-	if err := collectSeed(ret, c); err != nil {
+	if value, err := collectInt64("seed", c, ret.Seed); err != nil {
 		return nil, err
+	} else {
+		ret.Seed = value
 	}
 
-	if err := collectKeep(ret, c); err != nil {
+	if value, err := collectInt("keep", c, ret.Keep); err != nil {
 		return nil, err
+	} else {
+		ret.Keep = value
 	}
 
 	if err := collectAggregation(ret, c); err != nil {
@@ -29,45 +34,10 @@ func ExtractSpecification(c *gin.Context) (*roll.Specification, error) {
 	if err := collectKeepCriteria(ret, c); err != nil {
 		return nil, err
 	}
-	
+
 	return ret, nil
 }
 
-func collectKeep(specification *roll.Specification, c *gin.Context) error {
-	keep := c.Query("keep")
-	if keep != "" {
-		intKeep, err := strconv.Atoi(keep)
-		if err != nil {
-			return err
-		}
-		specification.Keep = intKeep
-	}
-	return nil
-}
-
-func collectSeed(specification *roll.Specification, c *gin.Context) error {
-	seed := c.Query("seed")
-	if seed != "" {
-		intSeed, err := strconv.ParseInt(seed, 16, 64)
-		if err != nil {
-			return err
-		}
-		specification.Seed = intSeed
-	}
-	return nil
-}
-
-func collectRolls(specification *roll.Specification, c *gin.Context) error {
-	rolls := c.Query("rolls")
-	if rolls != "" {
-		intRolls, err := strconv.Atoi(rolls)
-		if err != nil {
-			return err
-		}
-		specification.Rolls = intRolls
-	}
-	return nil
-}
 func collectKeepCriteria(specification *roll.Specification, c *gin.Context) error {
 	keepCriteria := c.Query("keepCriteria")
 	if keepCriteria != "" {
