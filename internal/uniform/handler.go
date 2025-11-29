@@ -1,23 +1,23 @@
-package web
+package uniform
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/scarcity-game/roll/web/queryparams"
+	"github.com/scarcity-game/roll/internal/generic"
 	"net/http"
 )
 
 func SampleUniform(c *gin.Context) {
-	rollSpecification, err := queryparams.ExtractRollSpecification(c)
+	advantageSpecification, err := generic.ExtractSpecification(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	uniformSpecification, err := queryparams.ExtractUniformSpecification(c)
+	uniformSpecification, err := ExtractUniformSpecification(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	result, err := rollSpecification.Roll(uniformSpecification)
+	result, err := advantageSpecification.Roll(uniformSpecification)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

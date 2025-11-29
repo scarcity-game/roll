@@ -190,7 +190,11 @@ func TestSpecification_Roll(t *testing.T) {
 				additional: tt.fields.additional,
 				valid:      true,
 			}
-			assert.InDelta(t, tt.want, s.Roll(tt.args.random), tt.delta)
+			if got, err := s.Roll(tt.args.random); err != nil {
+				t.Error(err)
+			} else {
+				assert.InDelta(t, tt.want, got, tt.delta)
+			}
 		})
 	}
 }

@@ -1,9 +1,8 @@
-package queryparams
+package generic
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/scarcity-game/roll/internal/roll"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -18,7 +17,7 @@ func TestExtractSpecification(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *roll.Specification
+		want    *Specification
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
@@ -26,11 +25,11 @@ func TestExtractSpecification(t *testing.T) {
 			args: args{
 				url: "/rollDice?rolls=50&keep=3&keepCriteria=middle&aggregation=average&seed=abc123abc",
 			},
-			want: &roll.Specification{
+			want: &Specification{
 				Rolls:           50,
 				Keep:            3,
-				KeepCriteria:    roll.Middle,
-				RollAggregation: roll.Average,
+				KeepCriteria:    Middle,
+				RollAggregation: Average,
 				Seed:            46104984252,
 			},
 			wantErr: assert.NoError,
@@ -40,11 +39,11 @@ func TestExtractSpecification(t *testing.T) {
 			args: args{
 				url: "/rollDice?rolls=50&keep=3&keepCriteria=middle&aggregation=none&seed=abc123abc",
 			},
-			want: &roll.Specification{
+			want: &Specification{
 				Rolls:           50,
 				Keep:            3,
-				KeepCriteria:    roll.Middle,
-				RollAggregation: roll.None,
+				KeepCriteria:    Middle,
+				RollAggregation: None,
 				Seed:            46104984252,
 			},
 			wantErr: assert.NoError,
@@ -54,11 +53,11 @@ func TestExtractSpecification(t *testing.T) {
 			args: args{
 				url: "/rollDice?rolls=50&keep=3&keepCriteria=highest&aggregation=none&seed=abc123abc",
 			},
-			want: &roll.Specification{
+			want: &Specification{
 				Rolls:           50,
 				Keep:            3,
-				KeepCriteria:    roll.Highest,
-				RollAggregation: roll.None,
+				KeepCriteria:    Highest,
+				RollAggregation: None,
 				Seed:            46104984252,
 			},
 			wantErr: assert.NoError,
@@ -68,11 +67,11 @@ func TestExtractSpecification(t *testing.T) {
 			args: args{
 				url: "/rollDice?rolls=50&keep=3&keepCriteria=lowest&aggregation=none&seed=abc123abc",
 			},
-			want: &roll.Specification{
+			want: &Specification{
 				Rolls:           50,
 				Keep:            3,
-				KeepCriteria:    roll.Lowest,
-				RollAggregation: roll.None,
+				KeepCriteria:    Lowest,
+				RollAggregation: None,
 				Seed:            46104984252,
 			},
 			wantErr: assert.NoError,
@@ -121,13 +120,13 @@ func TestExtractSpecification(t *testing.T) {
 			req, _ := http.NewRequest("GET", tt.args.url, nil)
 			c.Request = req
 
-			got, err := ExtractRollSpecification(c)
-			tt.wantErr(t, err, fmt.Sprintf("ExtractRollSpecification() err = %v", err))
+			got, err := ExtractSpecification(c)
+			tt.wantErr(t, err, fmt.Sprintf("ExtractSpecification() err = %v", err))
 			if err != nil {
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ExtractRollSpecification() got = %v, want %v", got, tt.want)
+				t.Errorf("ExtractSpecification() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

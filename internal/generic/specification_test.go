@@ -1,4 +1,4 @@
-package roll
+package generic
 
 import (
 	"errors"
@@ -134,10 +134,10 @@ type testRoller struct {
 	curr  int
 }
 
-func (t *testRoller) Roll(rand *rand.Rand) float64 {
+func (t *testRoller) Roll(rand *rand.Rand) (float64, error) {
 	val := t.rolls[t.curr]
 	t.curr++
-	return val
+	return val, nil
 }
 
 func (t *testRoller) Validate() error {
@@ -159,7 +159,7 @@ func TestSpecification_Roll(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    *json.Outcome
+		want    *output.Outcome
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
@@ -177,7 +177,7 @@ func TestSpecification_Roll(t *testing.T) {
 					err:   nil,
 				},
 			},
-			want: &json.Outcome{
+			want: &output.Outcome{
 				RawValues:  []float64{1},
 				KeptValues: []float64{1},
 				Value:      1,
@@ -200,7 +200,7 @@ func TestSpecification_Roll(t *testing.T) {
 					err:   nil,
 				},
 			},
-			want: &json.Outcome{
+			want: &output.Outcome{
 				RawValues:  []float64{1},
 				KeptValues: []float64{1},
 				Value:      1,
@@ -223,7 +223,7 @@ func TestSpecification_Roll(t *testing.T) {
 					err:   errors.New("error"),
 				},
 			},
-			want: &json.Outcome{
+			want: &output.Outcome{
 				RawValues:  []float64{1},
 				KeptValues: []float64{1},
 				Value:      1,
@@ -246,7 +246,7 @@ func TestSpecification_Roll(t *testing.T) {
 					err:   nil,
 				},
 			},
-			want: &json.Outcome{
+			want: &output.Outcome{
 				RawValues:  []float64{1, 2},
 				KeptValues: []float64{1},
 				Value:      1,
@@ -269,7 +269,7 @@ func TestSpecification_Roll(t *testing.T) {
 					err:   nil,
 				},
 			},
-			want: &json.Outcome{
+			want: &output.Outcome{
 				RawValues:  []float64{1, 2, 3, 4},
 				KeptValues: []float64{2, 3},
 				Value:      2.5,
@@ -292,7 +292,7 @@ func TestSpecification_Roll(t *testing.T) {
 					err:   nil,
 				},
 			},
-			want: &json.Outcome{
+			want: &output.Outcome{
 				RawValues:  []float64{1, 2, 3, 4},
 				KeptValues: []float64{3, 4},
 				Value:      3.5,
@@ -315,7 +315,7 @@ func TestSpecification_Roll(t *testing.T) {
 					err:   nil,
 				},
 			},
-			want: &json.Outcome{
+			want: &output.Outcome{
 				RawValues:  []float64{1, 2, 3, 4},
 				KeptValues: []float64{1, 2},
 				Value:      1.5,
@@ -340,7 +340,7 @@ func TestSpecification_Roll(t *testing.T) {
 			if err != nil {
 				return
 			}
-			if !cmp.Equal(tt.want, got, cmpopts.IgnoreFields(json.Outcome{}, "Ref")) {
+			if !cmp.Equal(tt.want, got, cmpopts.IgnoreFields(output.Outcome{}, "Ref")) {
 				t.Errorf("Roll() mismatch")
 			}
 		})

@@ -1,18 +1,11 @@
-package roll
+package generic
 
 import (
 	"errors"
-	"fmt"
-	"github.com/google/uuid"
 	"github.com/scarcity-game/roll/web/json"
 	"math/rand"
 	"sort"
 )
-
-type Roller interface {
-	Roll(*rand.Rand) (float64, error)
-	Validate() error
-}
 
 type Specification struct {
 	Rolls           int
@@ -46,7 +39,7 @@ func (s *Specification) Validate() error {
 	return nil
 }
 
-func (s *Specification) Roll(roller Roller) (*json.Outcome, error) {
+func (s *Specification) Roll(roller Roller) (*output.Outcome, error) {
 	random := rand.New(rand.NewSource(s.Seed))
 	if err := s.Validate(); err != nil {
 		return nil, err
@@ -54,7 +47,7 @@ func (s *Specification) Roll(roller Roller) (*json.Outcome, error) {
 	if err := roller.Validate(); err != nil {
 		return nil, err
 	}
-	outcome := &json.Outcome{}
+	outcome := &output.Outcome{}
 	outcome.Seed = s.Seed
 	outcome.RawValues = make([]float64, s.Rolls)
 	for i := 0; i < s.Rolls; i++ {
@@ -67,16 +60,15 @@ func (s *Specification) Roll(roller Roller) (*json.Outcome, error) {
 	s.applyKeep(outcome)
 	switch s.RollAggregation {
 	case None:
-		outcome.Value = outcome.KeptValues[0]
+		outcome.FloatValue = outcome.KeptValues[0]
 	case Average:
-		outcome.Value = average(outcome.KeptValues)
+		outcome.FloatValue = average(outcome.KeptValues)
 	}
-	outcome.Ref = uuid.New().String()
-	fmt.Println(fmt.Sprintf("ref created: %s. seed: %d. value: %f.", outcome.Ref, outcome.Seed, outcome.Value))
+	outcome.LogRef()
 	return outcome, nil
 }
 
-func (s *Specification) applyKeep(outcome *json.Outcome) {
+func (s *Specification) applyKeep(outcome *output.Outcome) {
 	outcome.KeptValues = make([]float64, s.Keep)
 	if len(outcome.RawValues) == 1 && s.Keep == 1 {
 		outcome.KeptValues[0] = outcome.RawValues[0]

@@ -1,25 +1,24 @@
-package web
+package dice
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/scarcity-game/roll/internal/dice"
-	"github.com/scarcity-game/roll/web/queryparams"
+	"github.com/scarcity-game/roll/internal/generic"
 	"net/http"
 )
 
 func RollDice(c *gin.Context) {
-	diceString := c.DefaultQuery("dice", "1d6")
-	rollSpecification, err := queryparams.ExtractRollSpecification(c)
+	diceString := c.Query("dice")
+	advantageSpecification, err := generic.ExtractSpecification(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	diceSpecification, err := dice.ParseDiceString(diceString)
+	diceSpecification, err := ParseDiceString(diceString)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	result, err := rollSpecification.Roll(diceSpecification)
+	result, err := advantageSpecification.Roll(diceSpecification)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

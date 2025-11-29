@@ -1,27 +1,27 @@
-package queryparams
+package generic
 
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/scarcity-game/roll/internal/roll"
+	"github.com/scarcity-game/roll/internal/parse_utils"
 	"strings"
 )
 
-func ExtractRollSpecification(c *gin.Context) (*roll.Specification, error) {
-	ret := roll.DefaultSpecification()
-	if value, err := collectInt("rolls", c, ret.Rolls); err != nil {
+func ExtractSpecification(c *gin.Context) (*Specification, error) {
+	ret := DefaultSpecification()
+	if value, err := parse_utils.CollectInt("rolls", c, ret.Rolls); err != nil {
 		return nil, err
 	} else {
 		ret.Rolls = value
 	}
-
-	if value, err := collectInt64("seed", c, ret.Seed); err != nil {
+	value := c.Query("seed")
+	if seed, err := parse_utils.ParseSeed(value); err != nil {
 		return nil, err
 	} else {
-		ret.Seed = value
+		ret.Seed = seed
 	}
 
-	if value, err := collectInt("keep", c, ret.Keep); err != nil {
+	if value, err := parse_utils.CollectInt("keep", c, ret.Keep); err != nil {
 		return nil, err
 	} else {
 		ret.Keep = value
@@ -38,30 +38,30 @@ func ExtractRollSpecification(c *gin.Context) (*roll.Specification, error) {
 	return ret, nil
 }
 
-func collectKeepCriteria(specification *roll.Specification, c *gin.Context) error {
+func collectKeepCriteria(specification *Specification, c *gin.Context) error {
 	keepCriteria := c.Query("keepCriteria")
 	if keepCriteria != "" {
 		switch strings.ToLower(keepCriteria) {
 		case "highest":
-			specification.KeepCriteria = roll.Highest
+			specification.KeepCriteria = Highest
 		case "lowest":
-			specification.KeepCriteria = roll.Lowest
+			specification.KeepCriteria = Lowest
 		case "middle":
-			specification.KeepCriteria = roll.Middle
+			specification.KeepCriteria = Middle
 		default:
 			return errors.New("invalid keepCriterial parameter")
 		}
 	}
 	return nil
 }
-func collectAggregation(specification *roll.Specification, c *gin.Context) error {
+func collectAggregation(specification *Specification, c *gin.Context) error {
 	aggregation := c.Query("aggregation")
 	if aggregation != "" {
 		switch strings.ToLower(aggregation) {
 		case "average":
-			specification.RollAggregation = roll.Average
+			specification.RollAggregation = Average
 		case "none":
-			specification.RollAggregation = roll.None
+			specification.RollAggregation = None
 		default:
 			return errors.New("invalid rollAggregation parameter")
 		}

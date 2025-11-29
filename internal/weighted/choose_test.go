@@ -128,6 +128,10 @@ func TestSpecification_Roll(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.specification.valid = true
+			err := tt.specification.Validate()
+			if err != nil {
+				panic(err)
+			}
 			got, err := tt.specification.Roll(tt.args.random)
 			tt.wantErr(t, err, fmt.Sprintf("Roll()"))
 			if err != nil {

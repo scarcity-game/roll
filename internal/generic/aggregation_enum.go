@@ -1,4 +1,4 @@
-package roll
+package generic
 
 type Aggregation int
 

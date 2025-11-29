@@ -2,6 +2,7 @@ package weighted
 
 import (
 	"errors"
+	"github.com/scarcity-game/roll/internal/queryparams"
 	"math/rand"
 )
 
@@ -11,8 +12,11 @@ type Choice struct {
 }
 
 type Specification struct {
-	Choices []Choice `json:"choices"`
-	valid   bool
+	Choices     []Choice `json:"choices"`
+	StringSeed  string   `json:"seed"`
+	Seed        int64
+	valid       bool
+	totalWeight float64
 }
 
 func (s *Specification) Validate() error {
@@ -30,21 +34,26 @@ func (s *Specification) Validate() error {
 	if totalWeight == 0 {
 		return errors.New("no weights specified")
 	}
+	s.totalWeight = totalWeight
+
+	if seed, err := parse_utils.ParseSeed(s.StringSeed); err != nil {
+		return err
+	} else {
+		s.Seed = seed
+	}
 	s.valid = true
 	return nil
 }
 
-func (s *Specification) Roll(random *rand.Rand) (string, error) {
+func (s *Specification) Roll() (string, error) {
 	if !s.valid {
 		panic("valid == false but roll called")
 	}
 	if len(s.Choices) == 1 {
 		return s.Choices[0].Value, nil
 	}
-	totalWeight := 0.0
-	for _, choice := range s.Choices {
-		totalWeight += choice.Weight
-	}
+	totalWeight := s.totalWeight
+	random := rand.New(rand.NewSource(s.Seed))
 	selection := random.Float64() * totalWeight
 	for _, choice := range s.Choices {
 		selection -= choice.Weight

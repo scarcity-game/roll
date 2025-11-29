@@ -1,4 +1,4 @@
-package web
+package gaussian
 
 import (
 	"encoding/json"
