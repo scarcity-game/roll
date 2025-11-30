@@ -63,11 +63,11 @@ jobs:
         env:
           repo: '${{ github.repository }}'
       - name: apply resources folder
-        working-directory: "k8s-resources"
+        working-directory: "deployments"
         run: |
           kustomize edit set image app-image=ghcr.io/${repo_lc}:sha-${{ github.sha }}
           kubectl kustomize | kubectl apply -f -
       - name: await deployment rollout
-        working-directory: "k8s-resources"
+        working-directory: "deployments"
         run: |
           kubectl rollout status -n scarcity deployments
