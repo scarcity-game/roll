@@ -2,7 +2,7 @@ package generic
 
 import (
 	"errors"
-	"github.com/scarcity-game/roll/web/json"
+	"github.com/scarcity-game/roll/web/output"
 	"math/rand"
 	"sort"
 )

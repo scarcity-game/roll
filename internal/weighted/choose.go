@@ -2,7 +2,7 @@ package weighted
 
 import (
 	"errors"
-	"github.com/scarcity-game/roll/internal/queryparams"
+	"github.com/scarcity-game/roll/internal/parse_utils"
 	"math/rand"
 )
 

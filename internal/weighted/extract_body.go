@@ -2,7 +2,7 @@ package weighted
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/scarcity-game/roll/internal/queryparams"
+	"github.com/scarcity-game/roll/internal/parse_utils"
 )
 
 func ExtractWeightedSpecification(c *gin.Context) (*Specification, error) {
