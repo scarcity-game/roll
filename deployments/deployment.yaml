@@ -12,6 +12,8 @@ spec:
       labels:
         app: roll
     spec:
+      imagePullSecrets:
+        - name: ghcr-example-image-pull-secret
       containers:
         - image: app-image
           imagePullPolicy: Always
