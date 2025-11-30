@@ -38,3 +38,36 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  deploy-k8s:
+    needs:
+      - build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.28.12'
+        name: install kubectl
+      - name: setup kubectl config
+        run: |
+          mkdir ${HOME}/.kube
+          echo "${{secrets.KUBE_CONFIG}}" >> ${HOME}/.kube/config
+        shell: bash
+      - name: confirm kubectl config
+        run: |
+          kubectl version
+      - name: lower case repo name
+        run: |
+          echo "repo_lc=${repo,,}" >>${GITHUB_ENV}
+        env:
+          repo: '${{ github.repository }}'
+      - name: apply resources folder
+        working-directory: "k8s-resources"
+        run: |
+          kustomize edit set image app-image=ghcr.io/${repo_lc}:sha-${{ github.sha }}
+          kubectl kustomize | kubectl apply -f -
+      - name: await deployment rollout
+        working-directory: "k8s-resources"
+        run: |
+          kubectl rollout status -n scarcity deployments

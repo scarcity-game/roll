@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roll
+  namespace: scarcity
+spec:
+  selector:
+    matchLabels:
+      app: roll
+  template:
+    metadata:
+      labels:
+        app: roll
+    spec:
+      containers:
+        - image: app-image
+          imagePullPolicy: Always
+          name: roll
+          ports:
+            - containerPort: 8080
