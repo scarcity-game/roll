@@ -3,6 +3,7 @@ package uniform
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/scarcity-game/roll/web/output"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -17,11 +18,11 @@ func TestSampleUniform(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/sampleUniform?max=100&min=10&rolls=50&keep=3&keepCriteria=middle&aggregation=average&seed=abc123abc", nil)
 		c.Request = req
 		SampleUniform(c)
-		var responseBody map[string]interface{}
-		err := json.Unmarshal(w.Body.Bytes(), &responseBody)
+		var outcome output.Outcome
+		err := json.Unmarshal(w.Body.Bytes(), &outcome)
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.InDelta(t, 73.776952, responseBody["value"], 0.0001)
+		assert.InDelta(t, 73.776952, outcome.FloatValue, 0.0001)
 	})
 }

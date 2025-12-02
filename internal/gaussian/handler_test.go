@@ -3,6 +3,7 @@ package gaussian
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/scarcity-game/roll/web/output"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -17,11 +18,11 @@ func TestSampleGaussian(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/sampleGaussian?mean=100&stddev=10&rolls=50&keep=3&keepCriteria=middle&aggregation=average&seed=abc123abc", nil)
 		c.Request = req
 		SampleGaussian(c)
-		var responseBody map[string]interface{}
-		err := json.Unmarshal(w.Body.Bytes(), &responseBody)
+		var outcome output.Outcome
+		err := json.Unmarshal(w.Body.Bytes(), &outcome)
 		if err != nil {
 			t.Fatal(err)
 		}
-		assert.InDelta(t, 98.810335, responseBody["value"], 0.0001)
+		assert.InDelta(t, 98.810335, outcome.FloatValue, 0.0001)
 	})
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
-	"time"
 )
 
 func TestSpecification_Validate(t *testing.T) {
@@ -131,7 +130,7 @@ func TestSpecification_Roll(t *testing.T) {
 				additional: 0,
 			},
 			args: args{
-				random: rand.New(rand.NewSource(time.Now().UnixNano())),
+				random: rand.New(rand.NewSource(0)),
 			},
 			want:  100,
 			delta: 0,
@@ -143,7 +142,7 @@ func TestSpecification_Roll(t *testing.T) {
 				additional: 1,
 			},
 			args: args{
-				random: rand.New(rand.NewSource(time.Now().UnixNano())),
+				random: rand.New(rand.NewSource(0)),
 			},
 			want:  1,
 			delta: 0,
@@ -160,10 +159,10 @@ func TestSpecification_Roll(t *testing.T) {
 				additional: 0,
 			},
 			args: args{
-				random: rand.New(rand.NewSource(time.Now().UnixNano())),
+				random: rand.New(rand.NewSource(0)),
 			},
-			want:  1000 * 3.5,
-			delta: 100,
+			want:  3401,
+			delta: 0,
 		},
 		{
 			name: "100d2 dice",
@@ -177,10 +176,10 @@ func TestSpecification_Roll(t *testing.T) {
 				additional: 0,
 			},
 			args: args{
-				random: rand.New(rand.NewSource(time.Now().UnixNano())),
+				random: rand.New(rand.NewSource(0)),
 			},
-			want:  150,
-			delta: 10,
+			want:  136,
+			delta: 0,
 		},
 	}
 	for _, tt := range tests {

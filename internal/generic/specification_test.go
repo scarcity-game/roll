@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/scarcity-game/roll/web/json"
+	"github.com/scarcity-game/roll/web/output"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
@@ -180,7 +180,7 @@ func TestSpecification_Roll(t *testing.T) {
 			want: &output.Outcome{
 				RawValues:  []float64{1},
 				KeptValues: []float64{1},
-				Value:      1,
+				FloatValue: 1,
 				Seed:       1,
 			},
 			wantErr: assert.NoError,
@@ -203,7 +203,7 @@ func TestSpecification_Roll(t *testing.T) {
 			want: &output.Outcome{
 				RawValues:  []float64{1},
 				KeptValues: []float64{1},
-				Value:      1,
+				FloatValue: 1,
 				Seed:       1,
 			},
 			wantErr: assert.Error,
@@ -226,7 +226,7 @@ func TestSpecification_Roll(t *testing.T) {
 			want: &output.Outcome{
 				RawValues:  []float64{1},
 				KeptValues: []float64{1},
-				Value:      1,
+				FloatValue: 1,
 				Seed:       1,
 			},
 			wantErr: assert.Error,
@@ -249,7 +249,7 @@ func TestSpecification_Roll(t *testing.T) {
 			want: &output.Outcome{
 				RawValues:  []float64{1, 2},
 				KeptValues: []float64{1},
-				Value:      1,
+				FloatValue: 1,
 				Seed:       1,
 			},
 			wantErr: assert.NoError,
@@ -272,7 +272,7 @@ func TestSpecification_Roll(t *testing.T) {
 			want: &output.Outcome{
 				RawValues:  []float64{1, 2, 3, 4},
 				KeptValues: []float64{2, 3},
-				Value:      2.5,
+				FloatValue: 2.5,
 				Seed:       1,
 			},
 			wantErr: assert.NoError,
@@ -295,7 +295,7 @@ func TestSpecification_Roll(t *testing.T) {
 			want: &output.Outcome{
 				RawValues:  []float64{1, 2, 3, 4},
 				KeptValues: []float64{3, 4},
-				Value:      3.5,
+				FloatValue: 3.5,
 				Seed:       1,
 			},
 			wantErr: assert.NoError,
@@ -318,7 +318,7 @@ func TestSpecification_Roll(t *testing.T) {
 			want: &output.Outcome{
 				RawValues:  []float64{1, 2, 3, 4},
 				KeptValues: []float64{1, 2},
-				Value:      1.5,
+				FloatValue: 1.5,
 				Seed:       1,
 			},
 			wantErr: assert.NoError,

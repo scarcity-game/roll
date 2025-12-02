@@ -3,7 +3,6 @@ package weighted
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"math/rand"
 	"testing"
 )
 
@@ -74,13 +73,9 @@ func TestSpecification_Validate(t *testing.T) {
 }
 
 func TestSpecification_Roll(t *testing.T) {
-	type args struct {
-		random *rand.Rand
-	}
 	tests := []struct {
 		name          string
 		specification *Specification
-		args          args
 		want          string
 		wantErr       assert.ErrorAssertionFunc
 	}{
@@ -91,9 +86,7 @@ func TestSpecification_Roll(t *testing.T) {
 					Weight: 100,
 					Value:  "test",
 				}},
-			},
-			args: args{
-				random: rand.New(rand.NewSource(0)),
+				Seed: 0,
 			},
 			want:    "test",
 			wantErr: assert.NoError,
@@ -117,22 +110,17 @@ func TestSpecification_Roll(t *testing.T) {
 					Weight: 1.2,
 					Value:  "option5",
 				}},
+				Seed: 0,
 			},
-			args: args{
-				random: rand.New(rand.NewSource(0)),
-			},
-			want:    "option3",
+			want:    "option1",
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.specification.valid = true
-			err := tt.specification.Validate()
-			if err != nil {
-				panic(err)
-			}
-			got, err := tt.specification.Roll(tt.args.random)
+			tt.specification.Seed = 0
+			got, err := tt.specification.Roll()
 			tt.wantErr(t, err, fmt.Sprintf("Roll()"))
 			if err != nil {
 				return
